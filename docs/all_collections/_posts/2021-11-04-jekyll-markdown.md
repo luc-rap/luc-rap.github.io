@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Prediction of Atomic Forces and Potential Energy Surfaces with Machine Learning Methods
-date: 2021-11-04
+date: 2024-05-14
 categories: [Python, Dscribe, JupyterLab, ML, NNs]
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DnD Bot Notes
-date: 1948-12-12 10:18:00
+date: 2026-04-03
 categories: [Python, pyaudio, whisper, ollama]
 ---
 

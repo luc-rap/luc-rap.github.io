@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ball Detection in Sports Videos
-date: 1948-12-12 10:18:00
+date: 2023-07-21
 categories: [Python, PyTorch, Docker, YOLO models, Transformers, CNNs]
 ---
 
