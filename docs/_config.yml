@@ -28,7 +28,7 @@ twitter_username: jekyllrb
 github_username: luc-rap
 
 # Minimal Mistakes theme settings
-theme: minimal-mistakes-jekyll
+theme: jekyll-theme-minimal
 minimal_mistakes_skin: "default" # "air", "aqua", "contrast", "dark", "dirt", "mint", "sunrise", "neon"
 
 # Site Author
