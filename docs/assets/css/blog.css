@@ -169,6 +169,7 @@ hr {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  text-align: justify;
 }
 #skills {
   margin-top: 1rem;
