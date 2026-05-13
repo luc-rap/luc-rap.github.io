@@ -28,13 +28,13 @@ twitter_username: jekyllrb
 github_username: luc-rap
 
 # Minimal Mistakes theme settings
-theme: jekyll-theme-minimal
+theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: "default" # "air", "aqua", "contrast", "dark", "dirt", "mint", "sunrise", "neon"
 
 # Site Author
 author:
   name: "Luc Rap"
-  avatar: "/assets/images/bio-photo.jpg"
+  avatar: "/assets/images/IMG_68531.png"
   bio: "A passionate developer and designer."
   location: "Your Location"
   links:
