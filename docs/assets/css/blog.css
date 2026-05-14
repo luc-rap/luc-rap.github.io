@@ -168,7 +168,7 @@ hr {
 #bio {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: top;
   text-align: justify;
 }
 #skills {
@@ -203,7 +203,10 @@ hr {
 }
 #img-wrapper img {
   border-radius: 50%;
-  max-width: 100px;
+  max-width: 120px;
+  height: 120px;        /* add this */
+  object-fit: cover;    /* add this — crops without stretching */
+  object-position: top; /* adjust to center, top, or a % to reframe the face */
 }
 #bio-wrapper {
   margin-left: 1rem;
@@ -382,4 +385,19 @@ footer a:visited {
 footer a:hover {
   color: var(--white-1);
   border-color: var(--white-1);
+}
+
+#meta-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: var(--white-2);
+  opacity: 0.55;
+}
+
+.meta-sep {
+  opacity: 0.4;
 }

@@ -1,9 +1,8 @@
 name: Lucia Rapanova Woollett
-dp: https://avatars.githubusercontent.com/u/45311429?v=4
+dp: /assets/images/pfp.png
 description: "
   <p>
-    Data-focused Computer Science graduate based in SW FL, USA. Experienced in data analysis, data engineering, ML workflows and project management.
-    I enjoy working with data and personal projects, developing scripts, tools and Discord bots. Occasionally, I tutor and volunteer for projects such as Django Girls. 
+  Data Engineer with an MSc in CS. Into data, ML, and building tools. I also enjoy tutoring and volunteering for projects such as Django Girls. 
   </p>
 "
 email: lucia.rapanova@gmail.com
@@ -16,3 +15,9 @@ contact:
     url: mailto:lucia.rapanova@gmail.com
   - title: discord
     url: https://discordapp.com/users/510096145402298378
+pronouns: she/her
+timezone: "America/New_York"
+location: "📍SW Florida, USA"
+languages:
+  - EN
+  - SK
