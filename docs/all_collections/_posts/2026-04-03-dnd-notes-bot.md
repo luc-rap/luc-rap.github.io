@@ -28,7 +28,7 @@ One of my goals was to make everything local. No data is shared with other servi
 
 This change rolled out in March 2026, right around the time I started working on this project. Since I was using Pycord, the voice support hasn't been fully implemented, so I spent a lot of time trying to make this work without much success. In a way, it was fun to join the Pycord Discord and try to test out the latest PRs ~~(just to sadly tell them that the issue is still there. Poor Plate)~~. 
 
-So as a temporary fix, I put aside the Discord bot and changed it to a script that records my microphone and system audio. This works quite well. Only difficult part was to make sure the microphone and system sudio record in the same time (import threading...)
+So as a temporary fix, I put aside the Discord bot and changed it to a script that records my microphone and system audio. This works quite well. Only difficult part was to make sure the microphone and system audio record in the same time (import threading...)
 
 Now, we have the audio and it's time for transcription. It was almost too easy. I remember back when I was working on my Bachelor thesis a few years ago, I was really struggling with Azure speech services, or essentially any service that won't ruin me financially and can transcribe audio. Whisper is free and open-source speech recognition system by OpenAI which runs locally, pretty easy to set-up (actually, I used Faster Whisper, but still) and you can choose from multiple models, for different sizes, speed and accuracy. Transcript looks good, however we lost the information about "who said what" by just recording my mic and system audio at the same time. Originally, Discord records people in the voice chat and outputs it into separate audio files for each user, which can be later synced up and would work well in this case. Labelling who said what in the transcript (it is called Speaker diarization) is something I am currently missing, but considering to add in the future.  
 
@@ -40,7 +40,7 @@ So now having the transcript, I thought it would be pretty straightforward to ju
 
 - The transcript was pretty long (I would not consider it a long document, but it was long enough to cause some issues)
 - I tried different models and they all appeared to suffer from recency bias (summarizing in big detail what happened in the last 10% of the session)
-- I tried feeding it some context, like the NPCs or character names, using Notion MCP as well as chromadb, but it kept hallucinating the MCP tools, and summarizing unrelevant parts from previous sessions
+- I tried feeding it some context, like the NPCs or character names, using Notion MCP as well as chromadb, but it kept hallucinating the MCP tools, and summarizing irrelevant parts from previous sessions
 
 And I was making sure my context was large enough ... I was little lost. There is a map-reduce method in LangChain which basically splits it into chunks, summarizes the chunks and then summarizes all the chunks. When I tried this, it still only focused on the last chunk!
 
@@ -50,7 +50,7 @@ The best way so far was just keeping the individual chunks summarized (and for n
 
 Overall this was a fun project to build and it actually works, which is the bar I set for myself. It records, transcribes, and produces usable session notes that our party can reference on Notion.
 RAG didn't bring the benefit I hoped for, and the recency bias in summarization is still something I want to solve. Getting speaker diarization working would make a big difference too - I think knowing who said what would help the LLM.
-The Discord bot version is still the goal. Once Pycord fully supports the DAVE protocol, I'd like to bring it back to running in the voice channel rather than as a local script. From there, maybe some dream features? - querying past sessions, auto-updating NPC and location databases in Notion, maybe even a bot you can ask mid-session: "wait, what is House Sivis again?"
+The Discord bot version is still the goal. Once Pycord fully supports the DAVE protocol, I'd like to bring it back to running in the voice channel rather than as a local script. From there, maybe some dream features would be - querying past sessions, auto-updating NPC and location databases in Notion, maybe even a bot you can ask mid-session: "wait, what is House Sivis again?"
 For now though, it does the job.
 
 [You can check out this project on Github](https://github.com/luc-rap/Discord_Notes_Bot/tree/main)
