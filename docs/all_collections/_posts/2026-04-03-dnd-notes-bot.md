@@ -26,7 +26,7 @@ One of my goals was to make everything local. No data is shared with other servi
 
 > Starting March 1st 2026, clients and apps without DAVE support will no longer be able to participate in Discord calls. This will complete our transition from last year’s experimental rollout to making DAVE the standard for Discord voice and video calls.
 
-This change rolled out in March 2026, right around the time I started working on this project. Since I was using Pycord, the voice support hasn't been fully implemented, so I spent a lot of time trying to make this work without much success. In a way, it was fun to join the Pycord Discord try to test out the latest PRs ~~(just to sadly tell them that the issue is still there. Poor Plate)~~. 
+This change rolled out in March 2026, right around the time I started working on this project. Since I was using Pycord, the voice support hasn't been fully implemented, so I spent a lot of time trying to make this work without much success. In a way, it was fun to join the Pycord Discord and try to test out the latest PRs ~~(just to sadly tell them that the issue is still there. Poor Plate)~~. 
 
 So as a temporary fix, I put aside the Discord bot and changed it to a script that records my microphone and system audio. This works quite well. Only difficult part was to make sure the microphone and system sudio record in the same time (import threading...)
 
