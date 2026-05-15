@@ -5,13 +5,18 @@
   </section>
   <section id="bio-wrapper">
     <div id="text-wrapper">{{site.data.author.description}}</div>
-    <div id="social-wrapper">
-      {% for i in site.data.author.contact %}
-      <a href="{{i.url}}" target="_blank">
-        <img src="{{site.baseurl}}/assets/icons/{{i.title}}.png" alt="" />
-      </a>
-      {%endfor%}
-    </div>
+  <div id="social-wrapper">
+    {% for i in site.data.author.contact %}
+    <a href="{{i.url}}" target="_blank">
+      <img src="{{site.baseurl}}/assets/icons/{{i.title}}.png" alt="" />
+    </a>
+    {%endfor%}
+  </div>
+
+  <a id="cv-download" href="{{site.baseurl}}/assets/cv/lucia-rap-cv.pdf" download>
+    Download CV ↓
+  </a>
+    
     <div id="meta-wrapper">
   <span class="meta-item">{{ site.data.author.pronouns }}</span>
   <span class="meta-sep">·</span>
@@ -87,8 +92,10 @@
     </div>
     <div class="entry-sub">Dell Technologies · Bratislava, Slovakia</div>
         <ul class="entry-details">
-      <li>Description</li>
-      <li>Description</li>
+      <li>Built an LLM pipeline for entity resolution — automated web evidence retrieval and deduplication across databases</li>
+      <li>Technical lead for entity resolution projects</li>
+      <li>Hackathon participant — domain validation challenges</li>
+      <li>Key technologies: Greenplum, SQL, Python, Airflow, Bash, Gitlab</li>
     </ul>
   </div>
 
@@ -99,7 +106,7 @@
     </div>
     <div class="entry-sub">Slovak University of Technology</div>
       <ul class="entry-details">
-      <li>Notable courses</li>
+      <li>Notable courses: Neural Networks, Knowledge Discovery, Statistical Methods of Experiment Evaluation, Information Retrieval, Advanced Methods of Interactive System Design, Information Retrieval</li>
     </ul>
   </div>
 
@@ -110,7 +117,7 @@
     </div>
     <div class="entry-sub">Slovak University of Technology</div>
     <ul class="entry-details">
-      <li>Notable courses</li>
+      <li>Notable courses: Intelligent Data Analysis, Artificial Intelligence, Database Systems, Human-Computer Interaction, Data Science Programming</li>
     </ul>
   </div>
 </section>

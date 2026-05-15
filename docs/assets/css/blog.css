@@ -401,3 +401,36 @@ footer a:hover {
 .meta-sep {
   opacity: 0.4;
 }
+
+#cv-download {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white-2);
+  border: 1px solid rgba(169, 171, 179, 0.25);
+  border-radius: 3px;
+  padding: 0.3rem 0.8rem;
+  transition: all 0.2s;
+}
+
+#cv-download:hover {
+  color: var(--white-1);
+  border-color: rgba(169, 171, 179, 0.7);
+  opacity: 1;
+}
+.article-banner {
+  width: calc(100% + 4rem);
+  margin: -2rem -2rem 1.25rem;
+  height: 140px;
+  overflow: hidden;
+  border-radius: 15px 15px 0 0;
+}
+
+.article-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
