@@ -24,6 +24,10 @@ body {
   color: cyan;
   border-bottom: 1px solid cyan;
 }
+
+/*a {
+  text-decoration: none;
+}*/
 @media (prefers-color-scheme: light) {
   .content a {
     color: #1ebaba;
