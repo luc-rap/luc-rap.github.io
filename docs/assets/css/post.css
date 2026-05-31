@@ -258,3 +258,14 @@ main {
     padding: 1.5rem;
   }
 }
+
+pre {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre code {
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
