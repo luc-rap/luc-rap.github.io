@@ -181,17 +181,17 @@ pre:hover .copy-code-button {
   }
 }
 
-footer a, a {
+footer a {
   color: var(--white-2);
   border-bottom: 1px solid rgba(169, 171, 179, 0.2);
   transition: border-color 0.2s;
 }
 
-footer a:visited, a:visited {
+footer a:visited {
   color: var(--white-2);  /* overrides the purple/blue visited default */
 }
 
-footer a:hover, a:hover {
+footer a:hover {
   color: var(--white-1);
   border-color: var(--white-1);
 }
