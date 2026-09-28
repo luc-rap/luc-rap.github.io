@@ -8,6 +8,8 @@ banner: /assets/images/databricks.png
 
 ### Databricks Bootcamp
 
+![intro](/assets/images/databricks.png)
+
 In August I joined a one-week Databricks bootcamp organized by DataExpert.io - called _The Rise of the AI Data Engineer_. The learning process started with Databricks basics, building data pipelines, context engineering and vector databases and at the end we built an end-to-end AI Agent with Databricks. 
 
 Frankly, I was very impressed by what we could build using the free edition of Databricks - database, web UI, AI Agents, MCP, RAGs... I learned so much this week and got to know so many people (the Discord community is awesome!). Everyone was so helpful and supportive! Big thanks to Zach Wilson for organizing this and for his time, love his energy and teaching. It was an intense week but super worth it! 
