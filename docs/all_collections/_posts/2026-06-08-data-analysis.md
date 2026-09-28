@@ -37,7 +37,7 @@ The final notebook is available here: https://github.com/luc-rap/customer-churn-
 
 In the churn dataset, there are several columns, and some are more useful than others. The target column to predict is simply 'Churn' (Yes/No or 1/0 - we will actually replace all categorical variables with numeric values). 
 
-I was thinking about starting with forming some hypotheses. We want to check how significant are certain columns and possibly drop them. There are columns such as state that have high cardinality, and we need to ask "Is the overall pattern of this relationship meaningful and clear?". But sometimes even if we reject the null hypothesis, we have to use our own judgment, supported by the data. While the chi-square test on State vs Churn returned a p-value of 0.00468, I noticed several states had fewer than 5 expected churners in this sample, which makes the result less reliable. Rather than over-interpreting this, I'd treat geographic patterns here as exploratory rather than conclusive. You'd reject the null hypothesis and conclude state and churn are not independent. BUT this is where the nuance matters. However, practically speaking, the effect appears driven by a handful of outlier states - particularly Texas (29%) and New Jersey (28%) - rather than a consistent geographic pattern. Most states cluster around the dataset's overall churn rate of ~14-15%, suggesting state alone is unlikely to be a strong predictive feature. 
+I was thinking about starting with forming some hypotheses. We want to check how significant are certain columns and possibly drop them. There are columns such as state that have high cardinality, and we need to ask "Is the overall pattern of this relationship meaningful and clear?". But sometimes even if we reject the null hypothesis, we have to use our own judgment, supported by the data. While the chi-square test on State vs Churn returned a p-value of 0.00468, I noticed several states had fewer than 5 expected churners in this sample, which makes the result less reliable. Rather than over-interpreting this, I'd treat geographic patterns here as exploratory rather than conclusive. So you'd reject the null hypothesis and conclude state and churn are not independent. BUT this is where the nuance matters. However, practically speaking, the effect appears driven by a handful of outlier states - particularly Texas (29%) and New Jersey (28%) - rather than a consistent geographic pattern. Most states cluster around the dataset's overall churn rate of ~14-15%, suggesting state alone is unlikely to be a strong predictive feature. 
 
 ![1](/assets/images/ChurnState.png)
 
@@ -187,7 +187,7 @@ In other words:
 This makes business sense for churn - a false positive just means you send a retention offer to someone who wasn't going to leave anyway, but a false negative means you lose a customer you could have saved (which is worse). 
 Also think of it as: "This person's risk score is high enough, relative to everyone else, that we should flag them for retention outreach."
 
-**Lucia from the future: you're using the test set to choose the threshold. Then you evaluate that threshold on the same y_test 🥲** maybe adding validation dataset would be better. 
+**Lucia from the future:** you're using the test set to choose the threshold, then evaluating that threshold on the same y_test 🥲. That's technically data leakage. A better approach would be to use a validation set to choose the threshold and keep the test set untouched for the final evaluation.
 
 ## Random Forest
 
