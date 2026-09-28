@@ -31,7 +31,7 @@ What is churn? Usually business should define what classifies as churn, but usua
 
 For this project, we will be using the [Kaggle Telecom Churn Dataset](https://www.kaggle.com/datasets/mnassrib/telecom-churn-datasets/data?select=churn-bigml-20.csv), which consists of cleaned customer activity data (features), along with a churn label specifying whether a customer canceled the subscription. 
 
-The final notebook is available here: https://github.com/luc-rap/customer-churn-analysis/blob/main/churn_prediction.ipynb
+The final notebook is available [here](https://github.com/luc-rap/customer-churn-analysis/blob/main/churn_prediction.ipynb)
 
 ### Look at the Data
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Databricks Bootcamp
-date: 2026-08-03
+date: 2026-09-29
 categories: [Databricks, AI Data Engineering, LLM, RAG, Vector search, AI Agent]
 banner: /assets/images/databricks.png
 ---
@@ -24,7 +24,7 @@ Scenario:
 
 This was fairly straightforward and quite enjoyable. I liked working in Databricks and really appreciated having everything in one place. 
 
-Building the Lakebase:
+Setting up the Lakebase/Postgres backend:
 ![3](/assets/images/hw3.png)
 ![4](/assets/images/hw4.png)
 
@@ -85,9 +85,9 @@ Exposed Tools:
 - ```predict_umbrella_needed(location, date)``` - Umbrella recommendation
 - ```get_travel_recommendation(location, date)``` - Travel recommendation
 
-Sources for HW2 and HW3: https://github.com/luc-rap/hw-3-weather-prediction
+Sources for HW2 and HW3: [https://github.com/luc-rap/hw-3-weather-prediction](https://github.com/luc-rap/hw-3-weather-prediction)
 
-The final deliverable was an AI Agent, which was built in Databricks (agent playground). 
+The final deliverable was a Databricks-hosted AI agent connected to the weather MCP server and backed by the tools described above.
 
 ![8](/assets/images/hw7.png)
 ![9](/assets/images/hw8.png)
@@ -105,7 +105,31 @@ The project includes:
 - Adzuna API for job search data (https://developer.adzuna.com/)
 - App.py is located in /dashboard, app.yaml set up to deploy it from there
 
-Originally, part of the plan was to use CDF and Delta via Spark, but as we discovered later, this was not supported in free edition and this requirement was later dropped. 
+Originally, part of the plan was to use CDF and Delta via Spark, but as we discovered later, this was not supported in free edition (during that time) and this requirement was later dropped. 
+
+High level architecture:
+```
+                         ┌──────────────┐
+                         │  Adzuna API  │
+                         └──────┬───────┘
+                                │
+                                ▼
+                     ┌───────────────────┐
+                     │ Flask Application │
+                     └────────┬──────────┘
+                              │
+             ┌────────────────┼────────────────┐
+             ▼                ▼                ▼
+      ┌─────────────┐  ┌─────────────┐  ┌──────────────┐
+      │   Lakebase  │  │  Embeddings │  │ MCP Server   │
+      │ PostgreSQL  │  │ / Retrieval │  │              │
+      └──────┬──────┘  └──────┬──────┘  └──────┬───────┘
+             │                │                │
+             ▼                ▼                ▼
+      Jobs / Users /     Semantic Search    AI Agent
+          CVs                                / Tools
+
+```
 
 Features:
 - Search jobs via Adzuna API with natural language
@@ -122,8 +146,13 @@ Features:
 ![13](/assets/images/hw15.png)
 
 
-Source for the Capstone Project: https://github.com/luc-rap/databricks-capstone-project
+Source for the Capstone Project: [https://github.com/luc-rap/databricks-capstone-project](https://github.com/luc-rap/databricks-capstone-project)
 
 Overall, I was pretty impressed with what we can do on a single platform, but at the end, I was getting stressed out by the limitations of the free version. I wanted to work more on the UI but I was worried I will run out of compute at any point. And I didn't want to migrate AGAIN 🥲 I felt like I was back at college for one week, being pressed with deadlines :D I spent a lot of time trying to export the agent from Playground to the frontend, error after error. Also my API stopped working and I had to fetch locally, save it to csv and then upload the data to Databricks. 
 
 But, I managed to successfully complete it, pass the requirements, got a fancy png (ceritifcate) and a great feeling that I was able to push myself and learn something new 😊
+
+**What I took away**
+The bootcamp was especially useful because it connected several technologies I had previously encountered separately. At Dell, I worked on an LLM-based entity-resolution pipeline; during this bootcamp, I got hands-on experience with the infrastructure surrounding modern AI applications: structured storage, data ingestion, embeddings, vector search, APIs, MCP, and agent tooling.
+
+I'm particularly interested in the intersection of data engineering and AI engineering, where reliable data pipelines provide the foundation for useful AI applications.
