@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Customer Churn Analysis
-date: 2026-06-03
+date: 2026-09-28
 categories: [Python, EDA, ML]
 banner: /assets/images/churnbanner.png
 ---
@@ -11,7 +11,7 @@ banner: /assets/images/churnbanner.png
 It's been some time but I really wanted to dive into data analysis again. We did plenty of classic examples at college - Titanic, Diabetes, Air Quality, Credit Card Default.... Even though real datasets are almost always more messy than datasets from Kaggle, it is always such an interesting challenge to search for real insights from data. I've been also thinking about whether data analysis is still relevant despite the capabilities of LLMs and AI, and while I think that AI can plot graphs for you and clean your data, they can't make the real decisions, assumptions and they can't tell you the truth. (At least, not yet 😉). For business, you need to make conclusions, present your decisions, have evidence, you need to know what's meaningful and you need to ask the right questions. On top of that, companies are generating more data than ever. 
 
 Exploratory data analysis (EDA) is the key part of data analysis. It includes:
-- data descriptions, characteristics, attributes, basic statistical information about the data
+- descriptive statistics and an overview of the dataset
 - pair analysis, e.g. correlations
 - forming hypotheses
 - identifying problems with the data - e.g. missing values, duplicate values, improper data structure, outliers, and so on
@@ -20,16 +20,16 @@ Based on insights identified in EDA, we move to data pre-processing. It usually 
 - deduplication
 - different strategies for inputting missing data
 - dealing with outliers
-- data mapping, e.g. encoding categorical values
+- data mapping, e.g. encoding categorical variables
 
-The last part is the prediction - having a model that is capable of making predictions for new data. (The same pre-processing steps should be applied for the new data). We use metrics such as accuracy, precision, recall, to evaluate the model. And in the end, we discuss the overall results and conclusions AND present them and explain them to business/stakeholders. 
+EDA helps us understand the structure and quality of the data and generate hypotheses. If the business question is predictive—for example, identifying customers at risk of churn—we can then build and evaluate a classification model.
 
 
 ### Customer Churn Analysis
 
-What is churn? Usually business should define what classifies as churn, but usually it means - people who cancelled their subscription or stopped using the product. Retention is extremely important for businessess and one of the metrics to track is the churn rate. 
+What is churn? Usually business should define what classifies as churn, but usually it means - people who cancelled their subscription or stopped using the product. Retention is extremely important for businesses and one of the metrics to track is the churn rate. 
 
-For this project, we will be using the [Telecom Churn Dataset](https://www.kaggle.com/datasets/mnassrib/telecom-churn-datasets/data?select=churn-bigml-20.csv), which consists of cleaned customer activity data (features), along with a churn label specifying whether a customer canceled the subscription. 
+For this project, we will be using the [Kaggle Telecom Churn Dataset](https://www.kaggle.com/datasets/mnassrib/telecom-churn-datasets/data?select=churn-bigml-20.csv), which consists of cleaned customer activity data (features), along with a churn label specifying whether a customer canceled the subscription. 
 
 The final notebook is available here: https://github.com/luc-rap/customer-churn-analysis/blob/main/churn_prediction.ipynb
 
@@ -37,7 +37,7 @@ The final notebook is available here: https://github.com/luc-rap/customer-churn-
 
 In the churn dataset, there are several columns, and some are more useful than others. The target column to predict is simply 'Churn' (Yes/No or 1/0 - we will actually replace all categorical variables with numeric values). 
 
-I was thinking about starting with forming some hypotheses. We want to check how significant are certain columns and possibly drop them. There are columns such as state that have high cardinality, and we need to ask "Is the overall pattern of this relationship meaningful and clear?". But sometimes even if we reject the null hypothesis, we have to use our own judgment, supported by the data. While the chi-square test on State vs Churn returned a p-value of 0.00468, I noticed several states had fewer than 5 expected churners in this sample, which makes the result less reliable. Rather than over-interpreting this, I'd treat geographic patterns here as exploratory rather than conclusive. You'd reject the null hypothesis and conclude state and churn are not independent. BUT this is where the nuance matters. However, practically speaking, the effect appears driven by a handful of outlier states — particularly Texas (29%) and New Jersey (28%) — rather than a consistent geographic pattern. Most states cluster around the dataset's overall churn rate of ~14-15%, suggesting state alone is unlikely to be a strong predictive feature. 
+I was thinking about starting with forming some hypotheses. We want to check how significant are certain columns and possibly drop them. There are columns such as state that have high cardinality, and we need to ask "Is the overall pattern of this relationship meaningful and clear?". But sometimes even if we reject the null hypothesis, we have to use our own judgment, supported by the data. While the chi-square test on State vs Churn returned a p-value of 0.00468, I noticed several states had fewer than 5 expected churners in this sample, which makes the result less reliable. Rather than over-interpreting this, I'd treat geographic patterns here as exploratory rather than conclusive. You'd reject the null hypothesis and conclude state and churn are not independent. BUT this is where the nuance matters. However, practically speaking, the effect appears driven by a handful of outlier states - particularly Texas (29%) and New Jersey (28%) - rather than a consistent geographic pattern. Most states cluster around the dataset's overall churn rate of ~14-15%, suggesting state alone is unlikely to be a strong predictive feature. 
 
 ![1](/assets/images/ChurnState.png)
 
@@ -52,17 +52,17 @@ Test distribution:
 Next, we look at the pairplot. We see that multiple attributes are perfectly correlated - total day charge and total day minutes, and then the same for evenings, nights and international. High minutes = high charge by definition, not an independent signal. This is not good for the model, we will drop one of them later. It also shows that people who call support more often churn more (orange dots). Also, possibly people with international plan churn more. Perhaps people who use the service the most get charged the most, and they also call support before leaving. 
 
 We are seeing:
-- Positive correlation **Churn** & **International Plan**
-- Positive correlation **Churn** & **Total day minutes**
-- Positive correlation **Churn** & **Total day charge**
-- Positive correlation **Churn** & **Customer service calls**
+- Association between **Churn** & **International Plan**
+- Association between **Churn** & **Total day minutes**
+- Association between **Churn** & **Total day charge**
+- Association between **Churn** & **Customer service calls**
 
 ![4](/assets/images/output.png)
 
 Some thoughts:
 - We are seeing correlation between customer service calls and churn. We will check how confident we are (that the difference is not random)
 - customer calls are numerical, churn is categorical
-- Check Normality (Shapiro-Wilkov + Q-Q plot)
+- Check Normality (Shapiro-Wilk + Q-Q plot)
 - Based on the results, do t-test or Mann-Whitney
 
 ```Python
@@ -101,12 +101,12 @@ plt.show()
 
 # Both Shapiro-Wilk and Q-Q plots indicate that the data is not normally distributed. Therefore, we will use the Mann-Whitney U test to compare the two group
 stat, p = mannwhitneyu(churned, not_churned, alternative='two-sided')
-print(f"Mann-Whitnery U p-value: {p:.5f}")
+print(f"Mann-Whitney U p-value: {p:.5f}")
 print(f"\nMedian calls (churned): {churned.median()}")
 print(f"Median calls (not churned): {not_churned.median()}")
 
-# p-value < 0.05, reject the null hypothesis. The difference in customer service calls between churners and nonchurners is significant (not due to random chance)
-# Median shows that churners make twice as many support calls on average
+# The p-value is below 0.05, providing evidence against the null hypothesis of equal distributions
+# The median number of customer-service calls was twice as high among churners (2 vs. 1)
 
 ```
 
@@ -117,20 +117,21 @@ df80_train["Total Charges"] = df80_train["Total day charge"] + df80_train["Total
 
 df20_test["Total Charges"] = df20_test["Total day charge"] + df20_test["Total eve charge"] + df20_test["Total night charge"] + df20_test["Total intl charge"]
 ```
+The charge variables are largely deterministic functions of usage minutes, so they contain overlapping information. I aggregate them into a single total-charge feature to reduce redundant features while retaining the overall usage-cost signal.
 
-This will also show high correlation between total charges and churn, which makes sense - the more a customer has to pay, the more likely they are to churn, and boxplot shows that customers who churn have higher total charges on average.
+This will also show high correlation between total charges and churn, which makes sense - assuming the more a customer has to pay, the more likely they are to churn, and boxplot shows that customers who churn have higher total charges on average.
 
 ![5](/assets/images/outputboxplot.png)
 
-We also do test for churn and total charges, similar to Churn and Customer Service Calls. 
+We also do a test for churn and total charges, similar to Churn and Customer Service Calls. 
 
-Overall conlusion: Churn is not driven by one single dominant factor — it's a combination of signals. No single feature has a strong enough relationship with churn to predict it reliably alone. In fact, this is why we use machine learning models.
+Overall conclusion: Churn is not driven by one single dominant factor — it's a combination of signals. No single feature has a strong enough relationship with churn to predict it reliably alone. In fact, this is why we use machine learning models.
 
-The story this tells so far: Churners are paying more AND calling support more. This paints an interesting picture of the "frustrated high-value customer" — they're spending more money with the company, something goes wrong, they call support repeatedly, it doesn't get resolved, and they eventually leave.
+The story this tells so far: Churners are paying more AND calling support more. One possible interpretation is a ‘frustrated high-value customer’ pattern: customers with higher usage charges also make more support calls and may be more likely to churn. However, this dataset is observational, so we cannot establish that support issues caused the churn.
 
 ### Classification
 
-We want to predict customers who are likely to churn (so Churn is our target variable). Classification predicts categories e.g. churn/no churn.
+We want to predict the churn label in the dataset (in general terms, customers who are likely to churn, so Churn is our target variable). Classification predicts categories e.g. churn/no churn.
 
 Some popular classification algorithms are:
 - Random forest
@@ -149,7 +150,7 @@ y_test = df20_test["Churn"]
 
 ## Logistic Regression
 
-These algortihms follow a relatively similar pattern. We will also start with just default values, and move on from there. 
+These algorithms follow a relatively similar pattern. We will also start with just default values, and move on from there. 
 
 ```Python
 from sklearn.linear_model import LogisticRegression
@@ -186,6 +187,8 @@ In other words:
 This makes business sense for churn - a false positive just means you send a retention offer to someone who wasn't going to leave anyway, but a false negative means you lose a customer you could have saved (which is worse). 
 Also think of it as: "This person's risk score is high enough, relative to everyone else, that we should flag them for retention outreach."
 
+**Lucia from the future: you're using the test set to choose the threshold. Then you evaluate that threshold on the same y_test 🥲** maybe adding validation dataset would be better. 
+
 ## Random Forest
 
 ```Python
@@ -202,7 +205,7 @@ plot_metrics(y_test, y_pred_rf, y_pred_proba_rf, "Random Forest Classifier")
 print(f"Accuracy: {round(accuracy_score(y_pred_rf, y_test), 2)}")
 ```
 
-Random forest was being a little suspicious, but overall, this was just the default RF, so let's accept it. 
+Random forest was being a little suspicious (no false positives, meaning the precision was 100%), but since this was an initial baseline with largely default hyperparameters, I treat these results as preliminary.
 
 ![8](/assets/images/rf1.png)
 ![9](/assets/images/rf2.png)
@@ -254,7 +257,7 @@ y_pred_svm = svm.predict(X_test)
 y_pred_proba_svm = svm.predict_proba(X_test)[:, 1]  # Get the probabilities for the positive class
 plot_metrics(y_test, y_pred_svm, y_pred_proba_svm, "Support Vector Machine")
 ```
-SVM was actually a little weird, it was performing rather poorly, so I make an executive decision to perform scaling 
+The initial SVM performed poorly. Because SVMs are sensitive to feature scale, I standardized the numerical features and retrained an RBF SVM with class weighting.
 
 ```Python
 from sklearn.preprocessing import StandardScaler
@@ -296,7 +299,7 @@ plt.show()
 ```
 ![12](/assets/images/featureimportance.png)
 
-We will also try using Grid Search... We can try this for every model, if we need to (It's the same stuff)
+Another improvement we can include is Grid Search, which helps us find the best hyperparameters for the model. 
 
 ```Python
 from sklearn.model_selection import GridSearchCV
