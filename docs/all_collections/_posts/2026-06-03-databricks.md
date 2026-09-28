@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Databricks Bootcamp
-date: 2026-09-29
+date: 2026-09-28
 categories: [Databricks, AI Data Engineering, LLM, RAG, Vector search, AI Agent]
 banner: /assets/images/databricks.png
 ---

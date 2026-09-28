@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Customer Churn Analysis
-date: 2026-09-28
+date: 2026-09-27
 categories: [Python, EDA, ML]
 banner: /assets/images/churnbanner.png
 ---
