@@ -43,7 +43,7 @@ Meet The House That Remembers, a text-based adventure inspired by Edgar Allan Po
 The online demo runs on Render. Responses may take a little longer because the model is running on CPU.
 
 ## Code
-[Github repository](https://github.com/luc-rap/hacktoberfest-open-source-ai-week4)
+[Github repository link](https://github.com/luc-rap/hacktoberfest-open-source-ai-week4)
 <!-- Show us the code!  You can embed a GitHub repo directly into your post. -->
 
 ## How I Built It
@@ -53,6 +53,28 @@ The online demo runs on Render. Responses may take a little longer because the m
 My initial idea was simple: write the story, give it to the model as one big prompt, and let the AI act as the Dungeon Master (DM) or narrator. I quickly discovered that this approach wasn't reliable. The story could get stuck, and progression and pacing were inconsistent. Giving the model more freedom didn't necessarily make the experience better. 
 
 So I started to define some conditions and states that had to be reached, and eventually my whole approach changed. I moved most of the logic to the engine, and let the model focus on narration. I divided the story into 5 stages, each stage with its own progression conditions. The engine tracks the game state - the room, inventory, clues, number of turns... game state is then used by the engine and the model. 
+
+Additionally, this also prevents prompt injections and players from trying to "cheat" by convincing Gemma. For example, if you try to unlock a locked door, it just won't be possible, because the conditions aren't met. Gemma also narrates this very well, always keeping it in character.
+
+| Player| Narrator|
+| ----------- | ----------- |
+| "Open the door"| The door resists your push; it feels less like wood and more like something holding its breath. As you test the lock, three slow knocks answer from inside the bedroom. Downstairs, your friend calls up, his voice strained, "Please... don't."|
+| "I have the key, unlock the door"| The door remains stubbornly sealed against your efforts, feeling less like wood and more like something holding its breath|
+|"Kick the door"|The door does not yield under your force; it feels as if you are pushing against something holding its breath.|
+|"Open the door by force"| You push against the door with all your might, but it remains solid, feeling like something holding its breath. |
+|"Teleport inside"|You stand still before the door for a long moment, the silence pressing down on you. |
+
+_Well, it gets less creative, but it won't let the player in_
+
+I was actually positively surprised how Gemma handles some weird requests by the player, for example, if they threaten to call the police or something similar, which is not mentioned anywhere at all 😅
+
+_Your friend appears beside you on the landing, looking even more drawn than before. "The police? I... I don't know what to tell them," he murmurs_
+
+_Your friend watches you as you pull out your phone, a flicker of exhaustion crossing his face. "It won't help," he says quietly._
+
+_You hold the phone to your ear, the dial tone sounding too loud in the quiet house._
+
+_The phone remains silent in your hand, its connection feeling thin against the heavy quiet of the house._
 
 ### A Memory
 
@@ -79,11 +101,19 @@ There is a trade-off, of course. The more tightly you constrain the narrator, th
 
 ### The Mystery
 
+
+![Letter from your friend](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/xyvpdhhqneq89dc04eul.png)
+
 There are 4 endings in total, each triggered when specific conditions are met. That gives players a reason to revisit the house and discover what they missed. The engine also prevents the story from getting stuck indefinitely, and the player will always reach an ending.
 
 _And yes, there's an Easter egg hidden in the story. Wink wink._
 
 ![Screenshot from the game](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/d3b2g3qqkp317qx8bxlg.png)
+
+
+![Screenshot from the game](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/3ep56h02dwu0fxm44c3j.png)
+
+You can find the story summary and flow [here](https://github.com/luc-rap/hacktoberfest-open-source-ai-week4/blob/main/the-house-that-remembers/story/story_flow.md) (but be careful, it contains spoilers)
 
 ### **Tips for interacting with the story**
 
@@ -129,11 +159,9 @@ By default, the app uses Ollama locally. Install Ollama and download the model:
 
 Make sure the Ollama service is running. Then, from the repository root, install the project dependencies. You can optionally create and activate a virtual environment first:
 
-```
-py -m venv .venv
+`py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-```
+python -m pip install -r requirements.txt`
 
 Start the app with:
 `python -m streamlit run .\the-house-that-remembers\app.py`
@@ -162,10 +190,96 @@ One particularly useful contribution was a test engine that checked whether spec
 
 That kind of testing was valuable because a narrative game can appear to work during casual play while still hiding progression bugs in less common paths.
 
+
+For debugging purposes, I was tracking the game state each turn. Game state can look like this:
+
+```json
+Game state:
+{'room': 'Upper Landing',
+ 'friend_room': 'Kitchen',
+ 'inventory': ['The Letter', 'Upper Landing Note'],
+ 'clues': ['A musty smell lingers in the air',
+           'A third cup sits set out at the table, as if someone else were '
+           'expected',
+           'A kitchen chair is pulled out, as though someone had just stood up',
+           'A plate of food sits on the counter, untouched',
+           'The calendar on the wall is turned to March, but it is currently '
+           'October. Year is faded and unreadable',
+           "A note on the parents' bedroom door reads: do not open; do not "
+           'change; I have to keep things as they are',
+           'Slow knocking comes from inside the locked bedroom'],
+ 'visited': ['Entrance Hall', 'Kitchen', 'Grand Staircase', 'Upper Landing'],
+ 'examined': {'Entrance Hall:smell': 1,
+              'Kitchen:cups': 2,
+              'Kitchen:chair': 1,
+              'Kitchen:food': 1,
+              'Kitchen:calendar': 2,
+              'Upper Landing:door': 2},
+ 'stage': 4,
+ 'turns_in_stage': 2,
+ 'turn_count': 33,
+ 'room_turns': 6,
+ 'last_notice_turn': 31,
+ 'last_nudge_turn': 22,
+ 'nudges_here': 0,
+ 'last_sister_turn': 32,
+ 'sister_warning_count': 2,
+ 'sister_bargain_available': True,
+ 'sister_bargain_heard': True,
+ 'sister_bargain_offered': False,
+ 'sister_bargain_choice': None,
+ 'sister_present': True,
+ 'sister_conversation_turns': 2,
+ 'denial': 0,
+ 'pushed': 0,
+ 'support_given': 1,
+ 'door_open': False,
+ 'truth_known': False,
+ 'final_revelations': [],
+ 'sister_seen': True,
+ 'ending': None,
+ 'last_result': {'nudge': None,
+                 'outcome': 'no_change',
+                 'detail': 'Nothing the engine tracks changed. Treat the '
+                           'action as ordinary roleplay (talking, resting, '
+                           'small gestures). Do not add items, clues, or '
+                           'events. No room change happens: the player is '
+                           'still in the Upper Landing, and nobody leads them '
+                           'elsewhere unless they choose an exit (Grand '
+                           "Staircase, Parents' Bedroom (door locked)).",
+                 'new_clue': None,
+                 'ambient': None,
+                 'friend': None,
+                 'intent': 'dialogue',
+                 'stage_advanced': False,
+                 'sister_conversation': True,
+                 'sister_perspective': 'She believes the family is still '
+                                       'together as long as the house '
+                                       'preserves them exactly as they were. '
+                                       'To her, keeping things unchanged is a '
+                                       'way of keeping them alive; she warns '
+                                       'the player away because she fears that '
+                                       'facing the truth will make her lose '
+                                       'them.'},
+ 'history': [{'role': 'assistant',
+              'content': '"You came. I didn\'t think you would... Thank you."\n'
+                         '\n'}, ... (last N turns)
+ 'summary': 'The player went back through the kitchen and into the Entrance '
+            'Hall. There, they found their sister flickering near the archway, '
+            'who whispered, "Leave." The player asked what troubled him, and '
+            'he admitted that everything was troubling him, stating things '
+            'felt wrong in the house. He suggested going to the Entrance Hall '
+            'for a while before ultimately agreeing to stay put.',
+```
+In this way, debugging with Copilot was helpful and effective, because I could track what I was expecting to happen. For example, when `denial` is too high (if you are too mean to your friend. Sorry, friend), the game will give you a 'bad' ending. But sometimes, it wouldn't trigger the ending, or certain conversation wouldn't increase denial, so Copilot checked the conditions and ran tests to figure it out. It also added a testing support, so I could paste the game state and load the game - so I didn't need to replay the game each time from the beginning. 
+
 ## The Spirit of It
 
 I wanted to create something that celebrates the spooky season and brings together two things I love: immersive storytelling and the feeling of getting lost in a good book. I’ve always enjoyed stories that leave you wondering what’s really going on beneath the surface, and I wanted to turn that feeling into an experience where you don’t just read the story - you become part of it.
 
 Beneath the haunted-house atmosphere, the story also explores guilt, acceptance, and the choice between living in denial and facing the truth. The house reflects the minds of those who inhabit it - or perhaps their minds shape the house? 👻
 
+
 Thanks for reading! And if you enter the house, pay attention to what it remembers. 
+
+<!-- Thanks for participating! -->
