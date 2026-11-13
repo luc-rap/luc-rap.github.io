@@ -14,7 +14,7 @@ Previously, I had used Databricks for almost everything, which was great for lea
 This isn't a criticism of Databricks - I really enjoyed working with it. I was simply curious to try a different technology stack and build something that more closely resembled a real-world data engineering pipeline.
 
 # The Goal
-The goal is: an automated data pipeline that collects Adzuna job postings, stores the raw data in Amazon S3, loads it into Snowflake, transforms it with dbt, and presents the results in Tableau, orchestrated with Airflow. 
+The goal is: an automated data pipeline that collects [Adzuna](https://developer.adzuna.com/) job postings, stores the raw data in Amazon S3, loads it into Snowflake, transforms it with dbt, and presents the results in Tableau, orchestrated with Airflow. 
 
 | Layer | Technology |
 | --- | --- |
@@ -33,7 +33,7 @@ The goal is: an automated data pipeline that collects Adzuna job postings, store
 
 I started with experimenting - reviewing how to call Adzuna, how the returned results look like, and how to process them. There are many options for the response, but I was focusing specifically on Data Engineering roles in Florida. [ingest_adzuna_jobs.py](https://github.com/luc-rap/job-market-intelligence/blob/main/ingest_adzuna_jobs.py) script performs the data retrieval from Adzuna, and uploads data to S3 bucket, with connection set-up through AWS CLI. It uploads the raw JSON responses, and all the heavy-lifting transformation will be done in Snowflake. 
 
-Now... connecting Snowflake to S3 was the biggest pain point. The instructions are pretty straightforward, however no matter what, AWS was refusing the Snowflake connection. I ended up contacting Snowflake support and they confirmed that everything is set up correctly, and they can see there are requests going out to AWS, but AWS was rejecting them. They offered an alternative work-around, and also suggested contacting AWS (to this day, I haven't been able to solve this issue). The alternative was building the stage and connecting to the S3 bucket by providing explicit credentials, which isn't the preferred aproach, but for this small project, I temporarily accepted this solution. I then ran `COPY INTO` from the stage into our raw data table, and the data is ingested. Sounds simple but I spent forever trying to figure this out! True canon event 🙃
+Now... connecting Snowflake to S3 was the biggest pain point. The instructions are pretty straightforward, however no matter what, AWS was refusing the Snowflake connection. I ended up contacting Snowflake support and they confirmed that everything is set up correctly, and they can see there are requests going out to AWS, but AWS was rejecting them. They offered an alternative work-around, and also suggested contacting AWS (to this day, I haven't been able to solve this issue). The alternative was building the stage and connecting to the S3 bucket by providing explicit credentials, which isn't the preferred approach, but for this small project, I temporarily accepted this solution. I then ran `COPY INTO` from the stage into our raw data table, and the data is ingested. Sounds simple but I spent forever trying to figure this out! True canon event 🙃
 
 After that, I started to write the transformations with dbt. I used the dbt integration within Snowflake and deployed it as dbt project object. The raw data is in `RAW.RAW_ADZUNA_JOBS`. Each row holds one JSON file (an array of jobs) plus `SOURCE_FILE` and `LOADED_AT`.
 
@@ -191,6 +191,6 @@ Some of the limitations were already mentioned throughout the article:
 - Adding retries/failure checks 
 - Pipeline monitoring
 
-Overall, a really great project! Especially if you want to try out designing an end-to-end pipeline and learn some new technologies and seeing it all work together is a rewarding feeling. 
+Overall, a really great project! Especially if you want to try out designing an end-to-end pipeline and learn some new technologies and seeing it all work together is a rewarding feeling. However, monitoring, retries, environment separation, security, and operational reliability are all areas that deserve further attention.
 
 Thank you for checking out my project and reading my blog! . ۫ ·(˶˃ᆺ˂˶) ♡ ˎˊ˗ You can find the source code on my [Github](https://github.com/luc-rap/job-market-intelligence/tree/main)
