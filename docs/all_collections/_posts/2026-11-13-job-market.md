@@ -27,7 +27,7 @@ The goal is: an automated data pipeline that collects Adzuna job postings, store
 | Visualization | Tableau Desktop |
 | Version control | Git, GitHub |
 
-![Job Market Intelligence architecture](/assets/images/architecture.png)
+![Job Market Intelligence architecture](/assets/images/architecture_flowchart.png)
 
 (As of the day of writing this article) I built this project using a combination of open-source tools, free services, and time-limited cloud credits. Adzuna supports up to 2,500 API calls a month, AWS gets you up to \$200 credits and 180 days (for new users), Snowflake offers 30 days with \$400/credit, Tableau offers free versions as well (Tableau Desktop Free Edition), and Airflow can run locally on Docker (with one limitation - scheduled runs happen only when computer is on and Docker is running).
 
@@ -43,7 +43,7 @@ Layers:
 - Marts: tables for Tableau, covering skills, company, and location
 - Tests: not_null and unique on JOB_ID, plus not_null checks on staging columns, such as the title and ad reference
 
-![dbt graph](assets/images/dbt_graph.png)
+![dbt graph](/assets/images/dbt_graph.png)
 
 # Let's talk about how it runs
 
@@ -85,7 +85,7 @@ with DAG(
     ingest_task >> copy_task
 ```
 
-![Airflow run](assets/images/airflow.png)
+![Airflow run](/assets/images/airflow.png)
 
 For this, you need to provide Snowflake connection to Airflow, I did via generating private and public key -  the private key is mounted into the Airflow containers from the local Snowflake keys directory, and the matching public key is registered for the Snowflake user. I also configured an Airflow Fernet key, used by Airflow to encrypt stored connection and variable values. 
 
@@ -97,7 +97,7 @@ I chose a rolling two-day ingestion window. This deliberately introduces overlap
 
 So now one more step in Snowflake - schedule a task to run dbt build automatically. This can be implemented using root and child tasks - the root task consumes/logs the stream, its child task runs dbt build for the Snowflake dbt project, and a finalizer task sends an email with the outcome and load summary. To do this, you have to build a stream that watches your raw table. Then the root task fires when new rows land, and consumes the stream. Child task runs dbt after the root task finishes. Finalizer task runs after all other tasks in the graph complete or fail to complete - this is our email notification. 
 
-![email](assets/images/email.png)
+![email](/assets/images/email.png)
 
 To summarize: 
 ```
@@ -111,19 +111,19 @@ Snowflake models ->
 Finalizer task (email result)
 ```
 
-![Snowflake overview](assets/images/snowflake_overview.png)
+![Snowflake overview](/assets/images/snowflake_overview.png)
 
 Now, the very last step is to build our dashboard. I decided to use Tableau Desktop - it provides the ability to connect to Snowflake to visualize the modeled job-market data. When connected, you choose the database and you are able to see all tables. Then you can start building. 
 
 My dashboard currently looks like this:
 
-![Tableau](assets/images/tableau_animated.gif)
+![Tableau](/assets/images/tableau_animated.gif)
 
 Like I mentioned, we are collecting insights on Data Engineering jobs in Florida. The Tableau dashboard filters postings to the last 30 days by default, but you can change this filter. It includes the top 10 hiring companies, total postings and companies hiring, a location map, posting trends over time, estimated average salary, salary by skill, and top skills. Skills are identified by matching job descriptions against the dbt seed ```skills.csv.``` The seed maps skill names to categories (such as language, cloud, data engineering, BI, and databases) and matching patterns. The intermediate skill model uses those patterns to count job postings mentioning each skill (but keep in mind that Adzuna provides 500-character description snippet). 
 
 What interests me the most are basically which cities are a good area to focus my data engineering job search, where I could possibly relocate, and which skills are the most in demand. 
 
-![Jobs and cities](assets/images/jobs-cities.png)
+![Jobs and cities](/assets/images/jobs-cities.png)
 
 A few disclaimers about the data:
 - Company names are not yet standardized, so casing and naming variations (for example, Deloitte and DELOITTE) may be counted as separate companies
@@ -131,7 +131,7 @@ A few disclaimers about the data:
 - It currently looks like only 2.4% of jobs mention SQL as a skill and I suspect this is caused by the limited Description snippet. The same goes for Pay by skill
 - When salary is not posted, Adzuna uses jobsworth salary predictor; you can filter these by setting ```salary_is_predicted``` field
 
-![Dashboard map](assets/images/dashboard-map.png)
+![Dashboard map](/assets/images/dashboard-map.png)
 
 # Architecture and implementation summary
 
