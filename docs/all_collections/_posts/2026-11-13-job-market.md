@@ -29,7 +29,7 @@ The goal is: an automated data pipeline that collects Adzuna job postings, store
 
 ![Job Market Intelligence architecture](/assets/images/architecture_flowchart.png)
 
-(As of the day of writing this article) I built this project using a combination of open-source tools, free services, and time-limited cloud credits. Adzuna supports up to 2,500 API calls a month, AWS gets you up to \$200 credits and 180 days (for new users), Snowflake offers 30 days with \$400/credit, Tableau offers free versions as well (Tableau Desktop Free Edition), and Airflow can run locally on Docker (with one limitation - scheduled runs happen only when computer is on and Docker is running).
+(As of the day of writing this article) I built this project using a combination of open-source tools, free services, and time-limited cloud credits. Adzuna supports up to 2,500 API calls a month, AWS gets you up to 200 USD credits and 180 days (for new users), Snowflake offers 30 days with 400 USD/credit, Tableau offers free versions as well (Tableau Desktop Free Edition), and Airflow can run locally on Docker (with one limitation - scheduled runs happen only when computer is on and Docker is running).
 
 I started with experimenting - reviewing how to call Adzuna, how the returned results look like, and how to process them. There are many options for the response, but I was focusing specifically on Data Engineering roles in Florida. [ingest_adzuna_jobs.py](https://github.com/luc-rap/job-market-intelligence/blob/main/ingest_adzuna_jobs.py) script performs the data retrieval from Adzuna, and uploads data to S3 bucket, with connection set-up through AWS CLI. It uploads the raw JSON responses, and all the heavy-lifting transformation will be done in Snowflake. 
 
@@ -90,7 +90,7 @@ with DAG(
 For this, you need to provide Snowflake connection to Airflow, I did via generating private and public key -  the private key is mounted into the Airflow containers from the local Snowflake keys directory, and the matching public key is registered for the Snowflake user. I also configured an Airflow Fernet key, used by Airflow to encrypt stored connection and variable values. 
 
 And this works! Now it is also a good time to mention the ingestion window overlap from earlier, and deduplication. Adzuna can be set up to return results from specific time periods, e.g. jobs posted in the last day. If it runs multiple times, it will return the same jobs, but:
-- Snowflake normally skips files it has already loaded through COPY INTO, while the relevant load metadata is retained.
+- Snowflake normally skips files it has already loaded through `COPY INTO`, while the relevant load metadata is retained.
 - Different files can still contain the same job postings. The dbt intermediate model handles those duplicates by retaining the latest observation for each JOB_ID
 
 I chose a rolling two-day ingestion window. This deliberately introduces overlap between runs, but it also gives the pipeline some resilience: if one scheduled run fails, the next run can still retrieve postings from the missed period, provided they remain within the API's retrieval window. This protects against a missed run, but it doesn't guarantee recovery if the outage lasts longer than the retrieval window.
